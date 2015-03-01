@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class URLQueue {
+public class URLQueue {
     
     struct URLQueueGlobals {
         static var URLQueueKey = "URLQueueKey"
@@ -17,54 +17,61 @@ class URLQueue {
         static var URLQueueDefaultsSuiteName = "group.com.eesel.URLQueueGroup"
     }
     
-    // #pragma mark - URLs
+    // MARK: URLs
     
-    class func urlStrings() -> Dictionary<String,String> {
-        let defaults = NSUserDefaults(suiteName: URLQueueGlobals.URLQueueDefaultsSuiteName)
-        if let encodedURLs = defaults.objectForKey(URLQueueGlobals.URLQueueKey) as? NSData {
-            return NSKeyedUnarchiver.unarchiveObjectWithData(encodedURLs) as Dictionary<String,String>
-        }
-        else {
-            defaults.setObject(NSKeyedArchiver.archivedDataWithRootObject([:]), forKey:URLQueueGlobals.URLQueueKey)
-            return [:]
-        }
-    }
-    
-    class func addURL(url : NSURL, title : String) {
-        let defaults = NSUserDefaults(suiteName: URLQueueGlobals.URLQueueDefaultsSuiteName)
-        if let encodedURLs = defaults.objectForKey(URLQueueGlobals.URLQueueKey) as? NSData {
-            if let urls = NSKeyedUnarchiver.unarchiveObjectWithData(encodedURLs) as? Dictionary<String,String> {
-                var mutURLs = urls
-                mutURLs[url.absoluteString] = title
-                defaults.setObject(NSKeyedArchiver.archivedDataWithRootObject(mutURLs), forKey:URLQueueGlobals.URLQueueKey)
-                return;
+    public class func urlStrings() -> Dictionary<String,String> {
+        if let defaults = NSUserDefaults(suiteName: URLQueueGlobals.URLQueueDefaultsSuiteName) {
+            if let encodedURLs = defaults.objectForKey(URLQueueGlobals.URLQueueKey) as? NSData {
+                return NSKeyedUnarchiver.unarchiveObjectWithData(encodedURLs) as! Dictionary<String,String>
+            }
+            else {
+                defaults.setObject(NSKeyedArchiver.archivedDataWithRootObject([:]), forKey:URLQueueGlobals.URLQueueKey)
             }
         }
-        
-        defaults.setObject(NSKeyedArchiver.archivedDataWithRootObject([url: title]), forKey:URLQueueGlobals.URLQueueKey)
+        return [:]
     }
     
-    class func saveURLs(urls : Dictionary<String,String>) {
-        let defaults = NSUserDefaults(suiteName: URLQueueGlobals.URLQueueDefaultsSuiteName)
-        defaults.setObject(NSKeyedArchiver.archivedDataWithRootObject(urls), forKey:URLQueueGlobals.URLQueueKey)
+    public class func addURL(url : NSURL, title : String) {
+        if let defaults = NSUserDefaults(suiteName: URLQueueGlobals.URLQueueDefaultsSuiteName) {
+            if let encodedURLs = defaults.objectForKey(URLQueueGlobals.URLQueueKey) as? NSData {
+                if let urls = NSKeyedUnarchiver.unarchiveObjectWithData(encodedURLs) as? Dictionary<String,String> {
+                    var mutURLs = urls
+                    if (url.absoluteString != nil) {
+                        mutURLs[url.absoluteString!] = title
+                        defaults.setObject(NSKeyedArchiver.archivedDataWithRootObject(mutURLs), forKey:URLQueueGlobals.URLQueueKey)
+                    }
+                    return;
+                }
+            }
+            
+            defaults.setObject(NSKeyedArchiver.archivedDataWithRootObject([url: title]), forKey:URLQueueGlobals.URLQueueKey)
+        }
     }
     
-    // #pragma mark - Preferred Browser Settings
+    public class func saveURLs(urls : Dictionary<String,String>) {
+        if let defaults = NSUserDefaults(suiteName: URLQueueGlobals.URLQueueDefaultsSuiteName) {
+            defaults.setObject(NSKeyedArchiver.archivedDataWithRootObject(urls), forKey:URLQueueGlobals.URLQueueKey)
+        }
+    }
     
-    class func browsers() -> NSString[] {
+    // MARK: Preferred Browser Settings
+    
+    public class func browsers() -> [String] {
         return ["Safari", "Chrome"]
     }
     
-    class func preferredBrowser() -> NSString {
-        let defaults = NSUserDefaults(suiteName: URLQueueGlobals.URLQueueDefaultsSuiteName)
-        if let browserKey = defaults.objectForKey(URLQueueGlobals.URLQueueBrowserKey) as? NSString {
-            return browserKey
+    public class func preferredBrowser() -> String {
+        if let defaults = NSUserDefaults(suiteName: URLQueueGlobals.URLQueueDefaultsSuiteName) {
+            if let browserKey = defaults.objectForKey(URLQueueGlobals.URLQueueBrowserKey) as? String {
+                return browserKey
+            }
         }
         return browsers()[0];
     }
     
-    class func storePreferredBrowser(browserName: NSString) {
-        let defaults = NSUserDefaults(suiteName: URLQueueGlobals.URLQueueDefaultsSuiteName)
-        defaults.setObject(browserName, forKey:URLQueueGlobals.URLQueueBrowserKey)
+    public class func storePreferredBrowser(browserName: String) {
+        if let defaults = NSUserDefaults(suiteName: URLQueueGlobals.URLQueueDefaultsSuiteName) {
+            defaults.setObject(browserName, forKey:URLQueueGlobals.URLQueueBrowserKey)
+        }
     }
 }

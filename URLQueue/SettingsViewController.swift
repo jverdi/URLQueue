@@ -28,7 +28,7 @@ class SettingsViewController: UITableViewController {
         }
     }
     
-    // #pragma mark - UITableViewDataSource
+    // MARK: UITableViewDataSource
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -38,11 +38,11 @@ class SettingsViewController: UITableViewController {
         return browsers.count
     }
     
-    override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let browser = browsers[indexPath.row]
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("SettingsCellIdentifier", forIndexPath: indexPath) as UITableViewCell
-        cell.textLabel.text = browser
+        let cell = tableView.dequeueReusableCellWithIdentifier("SettingsCellIdentifier", forIndexPath: indexPath) as! UITableViewCell
+        cell.textLabel?.text = browser
         
         let preferredBrowser = URLQueue.preferredBrowser()
         cell.accessoryType = browser == preferredBrowser ? .Checkmark : .None
@@ -54,15 +54,15 @@ class SettingsViewController: UITableViewController {
         let browser = browsers[indexPath.row]
         URLQueue.storePreferredBrowser(browser)
         
-        for cell in tableView.visibleCells() as UITableViewCell[] {
+        for cell in tableView.visibleCells() as! [UITableViewCell] {
             cell.accessoryType = .None
         }
         
-        tableView.cellForRowAtIndexPath(indexPath).accessoryType = .Checkmark
+        tableView.cellForRowAtIndexPath(indexPath)?.accessoryType = .Checkmark
     }
     
-    override func tableView(tableView: UITableView!, didDeselectRowAtIndexPath indexPath: NSIndexPath!) {
-        tableView.cellForRowAtIndexPath(indexPath).accessoryType = .None
+    override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.cellForRowAtIndexPath(indexPath)?.accessoryType = .None
     }
 }
 

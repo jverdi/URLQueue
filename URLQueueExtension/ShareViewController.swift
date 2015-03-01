@@ -18,25 +18,24 @@ class ShareViewController: SLComposeServiceViewController {
     }
 
     override func didSelectPost() {
-        
-        if let inputItems : NSExtensionItem[] = self.extensionContext.inputItems as? NSExtensionItem[] {
+        if let inputItems : [NSExtensionItem] = self.extensionContext?.inputItems as? [NSExtensionItem] {
             for item : NSExtensionItem in inputItems {
-                if let attachments = item.attachments as? NSItemProvider[] {
+                if let attachments = item.attachments as? [NSItemProvider] {
                     
                     if attachments.isEmpty {
-                        self.extensionContext.completeRequestReturningItems(nil, completionHandler: nil)
+                        self.extensionContext?.completeRequestReturningItems(nil, completionHandler: nil)
                         return
                     }
                     
-                    attachments[0].loadItemForTypeIdentifier(kUTTypeURL, options:nil, completionHandler: {
+                    attachments[0].loadItemForTypeIdentifier(kUTTypeURL as! String, options:nil, completionHandler: {
                         obj, error in
-                        if error {
+                        if error != nil {
                             println("Unable to add as a URL")
                         }
                         else if let url = obj as? NSURL {
                             URLQueue.addURL(url, title:self.textView.text)
                         }
-                        self.extensionContext.completeRequestReturningItems(nil, completionHandler: nil)
+                        self.extensionContext?.completeRequestReturningItems(nil, completionHandler: nil)
                     })
                 }
             }
